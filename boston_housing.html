@@ -12085,8 +12085,8 @@ I expect an increase in 'RM' value(number of rooms) would lead to an increase to
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer:</strong> Having a value of R2 0.923, I consider this model to have successfully captured the variation of the target variable to a very good degree, as 92% of the variance in the dependent variable is predictable from the independent variable.
-That said, it may not be very significant due to having only 5 data points.</p>
+<p><strong>Answer:</strong> Having a value of R2 0.923, I consider this model to have successfully captured the variation of the target variable to a very good degree, as 92% of the variance in the dependent variable is predictable from the independent variable. As R2 gets closer to 100%, the model would proably explain all variability of the data around its mean. Having 100% R2 would mean all the data points lie on the model line.</p>
+<p>That said, it may not be very significant due to having only 5 data points.</p>
 
 </div>
 </div>
@@ -13248,7 +13248,7 @@ Think about the pros and cons of adding more training points based on if the tra
 <p><strong>Answer: </strong>
 Graph with maximum depth = 3</p>
 <p>As more data is added the training curve is getting slightly lower, meanwhile the testing curve is getting higher, reaching a good generalization point (neither overfitting nor underfitting).</p>
-<p>I believe adding more data would benefit the model to reach an ideal converging point.</p>
+<p>As the training and testing curves both converge at around .8, more data points wouldn't yield significant improvements and wouldn't benefit the model.</p>
 
 </div>
 </div>
@@ -13783,6 +13783,74 @@ Model with maximum depth 1 have low training and validation score plus the gap b
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Grid Search Example</strong></p>
+<p>The following example tries to fit a linear Ridge model on diabetes dataset. Using grid search different alpha parameters are tried to determine the best regulaization strength for the model.</p>
+<p>As can be seen the GridSearchCV takes two parameters:</p>
+<ul>
+<li>estimator: the regression model.</li>
+<li>param_grid: a dictionary of the hyper parameters and their range of values that we need to try.</li>
+</ul>
+<p>After that we fit the model using the grid fit function and we get the best estimator from best_estimator field in the grid.</p>
+<p><a href="https://machinelearningmastery.com/how-to-tune-algorithm-parameters-with-scikit-learn/">The example is taken from here</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">Ridge</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">GridSearchCV</span>
+<span class="c1"># load the diabetes datasets</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_diabetes</span><span class="p">()</span>
+<span class="c1"># prepare a range of alpha values to test</span>
+<span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.001</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="c1"># create and fit a ridge regression model, testing each alpha</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">()</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">param_grid</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">alphas</span><span class="p">))</span>
+<span class="n">grid</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+<span class="c1"># summarize the results of the grid search</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_score_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>GridSearchCV(cv=None, error_score=&#39;raise&#39;,
+       estimator=Ridge(alpha=1.0, copy_X=True, fit_intercept=True, max_iter=None,
+   normalize=False, random_state=None, solver=&#39;auto&#39;, tol=0.001),
+       fit_params=None, iid=True, n_jobs=1,
+       param_grid={&#39;alpha&#39;: array([1.e+00, 1.e-01, 1.e-02, 1.e-03, 1.e-04, 0.e+00])},
+       pre_dispatch=&#39;2*n_jobs&#39;, refit=True, return_train_score=&#39;warn&#39;,
+       scoring=None, verbose=0)
+0.48879020446060156
+0.001
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Question-8---Cross-Validation">Question 8 - Cross-Validation<a class="anchor-link" href="#Question-8---Cross-Validation">&#182;</a></h3><ul>
 <li><p>What is the k-fold cross-validation training technique?</p>
 </li>
@@ -13806,6 +13874,58 @@ This method would greatly help in grid search since without it there will be a h
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong> Cross Validation Example </strong></p>
+<p>In the following example, a SVM model is fitting the iris dataset. The cross_val_score function implments cross validation on the model, splits and tries out the data 5 times with different splits every time. 
+The resulting scores array contains the different results of trying of using the validation folds, and clearly this would be very useful while finding optimal hyper-parameteres as this would prevent the chosen parameter(s) from overfitting.</p>
+<p><a href="http://scikit-learn.org/stable/modules/cross_validation.html#cross-validation">The example is taken from here</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">datasets</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">svm</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">cross_val_score</span>
+
+<span class="n">iris</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">load_iris</span><span class="p">()</span>
+<span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">shape</span>
+
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">clf</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">scores</span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0.96666667, 1.        , 0.96666667, 0.96666667, 1.        ])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -14137,6 +14257,7 @@ Range in prices: $73,357.39
 <li>Adjusting for inflation rate is useful but it's not enough because after 40 years, other parameters in the market that have been changed too. </li>
 <li>Other features are important than the ones presented in the dataset, such as closeness to family and work, facilities like hospitals, restaurants, parks..etc and crime rate are important too. </li>
 <li>Since the model is not gonna be robust enough for even urban Boston, it's very probable it's going to fail on other areas, more places from different cities with different conditions are needed to generalize better. </li>
+<li>While it's unfortunate, the characteristics of the entire neighborhood play a deciding role on the house price, since buyers are not isolated and would interact with their neighbors. It's not the only deciding factor though.</li>
 </ul>
 
 </div>
